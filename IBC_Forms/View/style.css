@@ -1,0 +1,46 @@
+﻿body {
+
+}
+
+#all{
+    height: 600px;
+    width: 900px;
+    border: solid 10px black;
+    background-color: grey;
+}
+
+#left, #right{
+    height: 550px;
+    width: 400px;
+    padding: 25px;
+    background-color: white;
+}
+
+#left{
+    float: left;
+}
+
+#right{
+    float: right;
+}
+
+#leftHeader{
+
+}
+
+#forms, #data, #export{
+    background-color: white;
+    padding-top: 20px;
+}
+
+#forms{
+
+}
+
+#data{
+
+}
+
+#export{
+
+}
