@@ -1,0 +1,12 @@
+﻿MemoryStream workStream = new MemoryStream();
+                    Document document = new Document();
+                    PdfWriter.GetInstance(document, workStream).CloseStream = false;
+
+                    document.Open();
+                    HTMLWorker hw = new HTMLWorker(document);
+                    hw.Parse(new StringReader(html));
+
+                    //StyleSheet ss = new StyleSheet();
+                    //hw.SetStyleSheet(ss);
+
+                    document.Close();

@@ -75,7 +75,7 @@ function openCurrentForm()
 
 function redrawForm()
 {  
-    var output = currentForm.Template;
+    var output = currentForm.HTMLTemplate;
 
     for (i = 0; i < currentForm.Fields.length; i++) {
         var value = $(".field_" + currentForm.Fields[i].Id).val();
@@ -96,16 +96,19 @@ function renderExport()
     for (i = 0; i < currentForm.Fields.length; i++) {
         fieldsParam += currentForm.Fields[i].Id + "=" + currentForm.Fields[i].Value + ";"
     }
-    var params = currentForm.Id + "/" + fieldsParam + "/pdf";
+    var params = currentForm.Id + "/" + fieldsParam;
     var url = "/api/export/" + params;
 
-    $("#exportPdfLink").attr("href", url)
+    $("#exportPdfLink").attr("href", url + "/pdf")
 
-    //Set Mail-Link ???
+    //Set Print-Link ???
+    //$("#exportPrintLink").attr("href", url + "/html")
 
-    //Set Docx-Link ???
+    //Set Docx-Link
+    $("#exportDocxLink").attr("href", url + "/docx")
 
-    //Set Mail-Link ???
+    //Set Mail-Link
+    $("#exportMailLink").attr("href", url + "/mail")
 
     $("#forms").hide();
     $("#export").show();

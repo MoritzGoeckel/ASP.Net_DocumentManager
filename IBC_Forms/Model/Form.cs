@@ -10,6 +10,7 @@ namespace IBC_Forms.Model
         public int Id { get; set; }
         public string Title { get; set; }
         public Field[] Fields { get; set; }
-        public string Template { get; set; }
+        public string HTMLTemplate { get; set; }
+        public string DocXTemplatePath { get; set; }
     }
 }

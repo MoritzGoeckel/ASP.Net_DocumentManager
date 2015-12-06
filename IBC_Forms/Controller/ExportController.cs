@@ -1,7 +1,10 @@
-﻿using IBC_Forms.Utils;
+﻿using IBC_Forms.Model;
+using IBC_Forms.Utils;
 using iTextSharp.text;
 using iTextSharp.text.html.simpleparser;
 using iTextSharp.text.pdf;
+using Microsoft.Office.Interop.Word;
+using Novacode;
 using System;
 using System.IO;
 using System.Linq;
@@ -19,91 +22,119 @@ namespace IBC_Forms.Controller
             return System.Web.Hosting.HostingEnvironment.MapPath("~/tmp/");
         }
 
+        private static string getTemplatePath()
+        {
+            return System.Web.Hosting.HostingEnvironment.MapPath("~/templates/");
+        }
+
         Random rand = new Random();
 
         [AcceptVerbs("GET", "POST")]
         public HttpResponseMessage GetExport(int id, string fields, string type)
         {
-            string html = getHTML(id, fields);
+            var form = getForm(id);
+            string tmpPath = getTmpPath() + rand.Next(100000);
+            string docxPath = tmpPath + ".docx";
 
-            if (html == null)
-                return Request.CreateResponse(HttpStatusCode.BadRequest);
-            else
+            File.Copy(getTemplatePath() + form.DocXTemplatePath, docxPath);
+            DocX document = DocX.Load(docxPath);
+            document = replaceFieldsInDocument(fields, document);
+
+            document.Save();
+
+            if (type == "pdf")
             {
-                if (type == "pdf")
-                {
-                    MemoryStream workStream = new MemoryStream();
-                    Document document = new Document();
-                    PdfWriter.GetInstance(document, workStream).CloseStream = false;
+                string pdfPath = tmpPath + ".pdf";
 
-                    document.Open();
-                    HTMLWorker hw = new HTMLWorker(document);
-                    hw.Parse(new StringReader(html));
+                var word = new Microsoft.Office.Interop.Word.Application();
+                word.Visible = false;
 
-                    //StyleSheet ss = new StyleSheet();
-                    //hw.SetStyleSheet(ss);
+                var wordDoc = word.Documents.Open(FileName: docxPath, ReadOnly: false);
+                wordDoc.SaveAs2(FileName: pdfPath, FileFormat: WdSaveFormat.wdFormatPDF);
+                wordDoc.Close();
 
-                    document.Close();
+                word.Quit();
 
-                    byte[] byteInfo = workStream.ToArray();
-                    workStream.Write(byteInfo, 0, byteInfo.Length);
-                    workStream.Position = 0;
+                HttpResponseMessage response = getFileResponse(pdfPath, "form.pdf");
 
-                    HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
-                    response.Content = new ByteArrayContent(workStream.GetBuffer());
-                    response.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
-                    response.Content.Headers.ContentDisposition.FileName = "form.pdf";
-                    response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                File.Delete(docxPath);
+                File.Delete(pdfPath);
 
-                    return response;
-                }
-                else if (type == "docx")
-                {
-                    //Convert to docx ???
-                    return null;
-                }
-                else if (type == "mail")
-                {
-                    //Do some mail stuff ???
-                    return null;
-                }
-                else
-                    return null;  
+                return response;
             }
+            else if (type == "docx")
+            {
+                HttpResponseMessage response = getFileResponse(docxPath, "form.docx");
+
+                File.Delete(docxPath);
+
+                return response;
+            }
+            else if (type == "html")
+            {
+                string htmlPath = tmpPath + ".html";
+
+                var word = new Microsoft.Office.Interop.Word.Application();
+                word.Visible = false;
+
+                var wordDoc = word.Documents.Open(FileName: docxPath, ReadOnly: false);
+                wordDoc.SaveAs2(FileName: htmlPath, FileFormat: WdSaveFormat.wdFormatHTML);
+                wordDoc.Close();
+
+                word.Quit();
+
+                HttpResponseMessage response = getFileResponse(htmlPath, "form.html");
+
+                File.Delete(docxPath);
+                File.Delete(htmlPath);
+
+                return response;
+            }
+            else if (type == "mail")
+            {
+                //Do Mail stuff
+                return null;
+            }
+            else
+                return null;
         }
 
         private HttpResponseMessage getFileResponse(string path, string name)
         {
+            byte[] bytes;
+            using (var stream = new FileStream(path, FileMode.Open))
+            {
+                bytes = new byte[stream.Length];
+                stream.Read(bytes, 0, (int)stream.Length);
+                stream.Close();
+            }
+
             HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
-            response.Content = new StreamContent(new FileStream(path, FileMode.Open, FileAccess.Read));
+            response.Content = new ByteArrayContent(bytes);
             response.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
             response.Content.Headers.ContentDisposition.FileName = name;
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
 
             return response;
         }
 
-        private string getHTML(int id, string fields)
+        private Form getForm(int id)
         {
-            var form = TestData.forms.FirstOrDefault((p) => p.Id == id);
-            if (form == null)
-            {
-                return null;
-            }
-            else
-            {
-                string html = form.Template;
+            return TestData.forms.FirstOrDefault((p) => p.Id == id);
+        }
 
-                foreach (string field in fields.Split(';'))
+        private DocX replaceFieldsInDocument(string fields, DocX document)
+        {
+            foreach (string field in fields.Split(';'))
+            {
+                if (field != null && field != "" && field != " ")
                 {
-                    if (field != null && field != "" && field != " ")
-                    {
-                        string[] keyValue = field.Split('=');
-                        html = html.Replace("|" + keyValue[0] + "|", keyValue[1]);
-                    }
+                    string[] keyValue = field.Split('=');
+                    document.ReplaceText("|" + keyValue[0] + "|", keyValue[1]);
                 }
-
-                return html;
             }
+
+            return document;
         }
     }
 }

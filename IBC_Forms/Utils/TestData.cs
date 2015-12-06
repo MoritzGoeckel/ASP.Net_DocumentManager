@@ -19,7 +19,8 @@ namespace IBC_Forms.Utils
                     new Field { Id = 1, Title = "Nachname" },
                     new Field { Id = 2, Title = "PLZ" }
                 },
-                Template = "<h1>Erste Form</h1>Vorname = |0|<br />Nachname = |1|<br />PLZ = |2|"
+                HTMLTemplate = "<h1>Erste Form</h1>Vorname = |0|<br />Nachname = |1|<br />PLZ = |2|",
+                DocXTemplatePath = "formEins.docx"
             },
 
             new Form {
@@ -30,7 +31,8 @@ namespace IBC_Forms.Utils
                     new Field { Id = 1, Title = "Nachname" },
                     new Field { Id = 2, Title = "PLZ" }
                 },
-                Template = "<h1>Zweite Form</h1>Vorname = |0|<br />Nachname = |1|<br />PLZ = |2|"
+                HTMLTemplate = "<h1>Zweite Form</h1>Vorname = |0|<br />Nachname = |1|<br />PLZ = |2|",
+                DocXTemplatePath = "formZwei.docx"
             }
         };
     }

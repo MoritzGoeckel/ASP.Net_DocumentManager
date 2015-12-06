@@ -43,6 +43,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DocX, Version=1.0.0.19, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Utils\DocX.dll</HintPath>
+    </Reference>
     <Reference Include="itextsharp, Version=5.5.8.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Utils\itextsharp.dll</HintPath>
@@ -98,7 +102,9 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Misc\deadcode.txt" />
     <Content Include="packages.config" />
+    <Content Include="Utils\DocX.dll" />
     <Content Include="View\Converters\html_to_pdf\README.md" />
     <Content Include="View\Converters\html_to_pdf\wscript.py" />
     <Content Include="View\Converters\html_to_docx\.arcconfig" />
@@ -134,7 +140,6 @@
     <Content Include="View\Converters\html_to_pdf\jspdf.plugin.standard_fonts_metrics.js" />
     <Content Include="View\Converters\html_to_pdf\jspdf.PLUGINTEMPLATE.js" />
     <Content Include="View\Converters\html_to_pdf\MIT-LICENSE.txt" />
-    <Content Include="View\Javascript\export.js" />
     <Content Include="View\Javascript\functions.js" />
     <Content Include="View\Libraries\jquery-1.11.3.min.js" />
     <Content Include="View\Sites\index.html" />
