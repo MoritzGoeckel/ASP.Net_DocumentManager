@@ -1,12 +1,13 @@
 ﻿using IBC_Forms.Utils;
-using Microsoft.Office.Interop.Word;
+using iTextSharp.text;
+using iTextSharp.text.html.simpleparser;
+using iTextSharp.text.pdf;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web;
+using System.Net.Http.Headers;
 using System.Web.Http;
 
 namespace IBC_Forms.Controller
@@ -24,50 +25,50 @@ namespace IBC_Forms.Controller
         public HttpResponseMessage GetExport(int id, string fields, string type)
         {
             string html = getHTML(id, fields);
+
             if (html == null)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             else
             {
-                WdSaveFormat format;
-
                 if (type == "pdf")
                 {
+                    MemoryStream workStream = new MemoryStream();
+                    Document document = new Document();
+                    PdfWriter.GetInstance(document, workStream).CloseStream = false;
 
+                    document.Open();
+                    HTMLWorker hw = new HTMLWorker(document);
+                    hw.Parse(new StringReader(html));
+
+                    //StyleSheet ss = new StyleSheet();
+                    //hw.SetStyleSheet(ss);
+
+                    document.Close();
+
+                    byte[] byteInfo = workStream.ToArray();
+                    workStream.Write(byteInfo, 0, byteInfo.Length);
+                    workStream.Position = 0;
+
+                    HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+                    response.Content = new ByteArrayContent(workStream.GetBuffer());
+                    response.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+                    response.Content.Headers.ContentDisposition.FileName = "form.pdf";
+                    response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+
+                    return response;
                 }
                 else if (type == "docx")
                 {
-
+                    //Convert to docx ???
+                    return null;
                 }
                 else if (type == "mail")
                 {
-                    //Do some mail stuff
+                    //Do some mail stuff ???
                     return null;
                 }
                 else
-                    return null;
-
-                //PDF oder DOCX
-                var word = new Microsoft.Office.Interop.Word.Application();
-                word.Visible = true;
-
-                int z = rand.Next(10000);
-
-                if (Directory.Exists(getTmpPath()) == false)
-                    Directory.CreateDirectory(getTmpPath());
-
-                var fromPath = getTmpPath() + "converter_" + z + ".html";
-                var toPath = getTmpPath() + "converter_" + z + ".converted";
-
-                File.WriteAllText(fromPath, html);
-
-                var wordDoc = word.Documents.Open(FileName: fromPath, ReadOnly: false);
-                wordDoc.SaveAs2(FileName: toPath, FileFormat: WdSaveFormat.wdFormatPDF);
-
-                HttpResponseMessage response = getFileResponse(toPath, "form." + type); // Naja...
-                File.Delete(fromPath);
-                File.Delete(toPath);
-
-                return response;
+                    return null;  
             }
         }
 

@@ -57,7 +57,7 @@ function openCurrentForm()
     var fields = currentForm.Fields;
     for (f = 0; f < fields.length; f++) {
         var field = fields[f];
-        output += "<tr><td>" + field.Title + ":</td> <td><input class='field_" + field.Id + "' onchange='redrawForm()' value='" + (field.value != undefined ? field.value:"" ) + "'></td></tr>";
+        output += "<tr><td>" + field.Title + ":</td> <td><input class='field_" + field.Id + "' onchange='redrawForm()' value='" + (field.Value != undefined ? field.Value:"" ) + "'></td></tr>";
     }
 
     output += "</table>";
@@ -81,7 +81,7 @@ function redrawForm()
         var value = $(".field_" + currentForm.Fields[i].Id).val();
 
         output = output.replace("|" + currentForm.Fields[i].Id + "|", value);
-        currentForm.Fields[i].value = value;
+        currentForm.Fields[i].Value = value;
     }
 
     $("#right").html(output);
@@ -90,6 +90,22 @@ function redrawForm()
 function renderExport()
 {
     $("#dataLink").html("<a href='#' onclick='openCurrentForm()'>Daten</a>");
+
+    //Set PDF-Export-link
+    var fieldsParam = "";
+    for (i = 0; i < currentForm.Fields.length; i++) {
+        fieldsParam += currentForm.Fields[i].Id + "=" + currentForm.Fields[i].Value + ";"
+    }
+    var params = currentForm.Id + "/" + fieldsParam + "/pdf";
+    var url = "/api/export/" + params;
+
+    $("#exportPdfLink").attr("href", url)
+
+    //Set Mail-Link ???
+
+    //Set Docx-Link ???
+
+    //Set Mail-Link ???
 
     $("#forms").hide();
     $("#export").show();

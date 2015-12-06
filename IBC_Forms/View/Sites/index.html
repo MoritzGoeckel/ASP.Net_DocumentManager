@@ -20,7 +20,7 @@
             <div id="data" style="display:none;"></div>
 
             <div id="export" style="display:none;">
-                <a href="#" onclick="exportPdf()">Als .pdf</a><br />
+                <a href="#" id="exportPdfLink">Als .pdf</a><br />
                 <a href="#" onclick="exportDocx()">Als .docx</a><br />
                 <a href="#" onclick="exportPrint()">Ausdrucken</a><br />
                 <a href="#" onclick="exportMail()">Sende E-Mail</a>
@@ -29,6 +29,8 @@
         </div>
         <div id="right"></div>
     </div>
+
+    <iframe id="invisibleIframe" style="display: none"></iframe>
 
 </body>
 </html>

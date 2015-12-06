@@ -1,9 +1,4 @@
-﻿function exportPdf()
-{
-
-}
-
-function exportMail() {
+﻿function exportMail() {
 
 }
 
