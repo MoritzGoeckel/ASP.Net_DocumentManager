@@ -12,13 +12,21 @@
 
     <div id="all">
         <div id="left">
-            <div id="leftHeader"><a href="#" onclick="renderFormsList();" style="color:black;">Formulare</a> <span id="dataLink">Daten</span> <span id="exportLink">Export</span></div>
+            <div id="leftHeader" style="text-align: center;">
+                <span style="float:left" id="formLink">Formulare</span>
+
+                <span id="dataLink">Daten</span>
+
+                <span style="float:right" id="exportLink">Export</span>
+            </div>
 
             <div id="forms" style="display:none;"></div>
 
             <div id="data" style="display:none;"></div>
 
             <div id="export" style="display:none;">
+                Wählen Sie ein Format in dem Sie das ausgefüllte Formular exportieren möchten<p />
+
                 <a href="#" id="exportPdfLink">Als .pdf</a><br />
                 <a href="#" id="exportDocxLink">Als .docx</a><br />
                 <a href="#" id="exportPrintLink">Ausdrucken</a><br />

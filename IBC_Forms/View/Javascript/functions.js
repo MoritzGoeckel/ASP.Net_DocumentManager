@@ -17,10 +17,19 @@ function renderFormsList()
     console.log("renderFormsList");
 
     var output = "";
+
+    output += "Bitte wählen Sie das Formular, welches Sie ausfüllen möchten<p />";
+
     for (i = 0; i < forms.length; i++) {
         var form = forms[i];
         output += "<a href='#' onclick='setNewCurrentForm(" + form.Id + ")'>" + form.Title + "</a><br />";
     }
+
+    $("#formLink").html("Formulare");
+    $('#formLink').css("text-decoration", "underline");
+
+    $('#dataLink').css("text-decoration", "none");
+    $('#exportLink').css("text-decoration", "none");
 
     $("#forms").html(output);
 
@@ -50,15 +59,25 @@ function setNewCurrentForm(id)
 
 function openCurrentForm()
 {
+    $('#formLink').css("text-decoration", "none");
+    $('#dataLink').css("text-decoration", "underline");
+    $('#exportLink').css("text-decoration", "none");
+
     console.log("openForm");
 
-    var output = "<table>";
+    $("#formLink").html('<a href="#" onclick="renderFormsList();">Formulare</a>');
+
+    var output = "Bitte füllen Sie die Felder des Formulars aus<p />";
+
+    output += "<table>";
 
     var fields = currentForm.Fields;
     for (f = 0; f < fields.length; f++) {
         var field = fields[f];
         output += "<tr><td>" + field.Title + ":</td> <td><input class='field_" + field.Id + "' onchange='redrawForm()' value='" + (field.Value != undefined ? field.Value:"" ) + "'></td></tr>";
     }
+
+    output += "<tr><td></td><td align='right'><a href='#' onclick='renderExport();' style='text-decoration:none;'>Export</a></td></tr>"
 
     output += "</table>";
 
@@ -69,7 +88,7 @@ function openCurrentForm()
     $("#data").show();
 
     $("#dataLink").html("Daten");
-    $("#exportLink").html("<a href='#' onclick='renderExport();' style='color:black;'>Export</a>");
+    $("#exportLink").html("<a href='#' onclick='renderExport();'>Export</a>");
     redrawForm();
 }
 
@@ -89,6 +108,14 @@ function redrawForm()
 
 function renderExport()
 {
+    $('#formLink').css("text-decoration", "none");
+    $('#dataLink').css("text-decoration", "none");
+    $('#exportLink').css("text-decoration", "underline");
+
+    $("#formLink").html('<a href="#" onclick="renderFormsList();">Formulare</a>');
+
+    $("#exportLink").html("Export");
+
     $("#dataLink").html("<a href='#' onclick='openCurrentForm()'>Daten</a>");
 
     //Set PDF-Export-link

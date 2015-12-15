@@ -17,26 +17,16 @@ namespace IBC_Forms.Controller
 {
     public class ExportController : ApiController
     {
-        private static string getTmpPath()
-        {
-            return System.Web.Hosting.HostingEnvironment.MapPath("~/tmp/");
-        }
-
-        private static string getTemplatePath()
-        {
-            return System.Web.Hosting.HostingEnvironment.MapPath("~/templates/");
-        }
-
         Random rand = new Random();
 
         [AcceptVerbs("GET", "POST")]
         public HttpResponseMessage GetExport(int id, string fields, string type)
         {
             var form = getForm(id);
-            string tmpPath = getTmpPath() + rand.Next(100000);
+            string tmpPath = LocalPath.getTmpPath() + rand.Next(100000);
             string docxPath = tmpPath + ".docx";
 
-            File.Copy(getTemplatePath() + form.DocXTemplatePath, docxPath);
+            File.Copy(LocalPath.getTemplatePath() + form.DocXTemplatePath, docxPath);
             DocX document = DocX.Load(docxPath);
             document = replaceFieldsInDocument(fields, document);
 
@@ -78,7 +68,7 @@ namespace IBC_Forms.Controller
                 word.Visible = false;
 
                 var wordDoc = word.Documents.Open(FileName: docxPath, ReadOnly: false);
-                wordDoc.SaveAs2(FileName: htmlPath, FileFormat: WdSaveFormat.wdFormatHTML);
+                wordDoc.SaveAs2(FileName: htmlPath, FileFormat: WdSaveFormat.wdFormatFilteredHTML);
                 wordDoc.Close();
 
                 word.Quit();
@@ -92,8 +82,25 @@ namespace IBC_Forms.Controller
             }
             else if (type == "mail")
             {
-                //Do Mail stuff
-                return null;
+                string htmlPath = tmpPath + ".html";
+
+                var word = new Microsoft.Office.Interop.Word.Application();
+                word.Visible = false;
+
+                var wordDoc = word.Documents.Open(FileName: docxPath, ReadOnly: false);
+                wordDoc.SaveAs2(FileName: htmlPath, FileFormat: WdSaveFormat.wdFormatHTML);
+                wordDoc.Close();
+
+                word.Quit();
+
+                string html = File.ReadAllText(htmlPath);
+
+                //Send Mail
+
+                File.Delete(docxPath);
+                File.Delete(htmlPath);
+
+                return new HttpResponseMessage();
             }
             else
                 return null;
@@ -120,7 +127,7 @@ namespace IBC_Forms.Controller
 
         private Form getForm(int id)
         {
-            return TestData.forms.FirstOrDefault((p) => p.Id == id);
+            return TestData.getForms().FirstOrDefault((p) => p.Id == id);
         }
 
         private DocX replaceFieldsInDocument(string fields, DocX document)

@@ -15,13 +15,13 @@ namespace IBC_Forms.Controller
         [AcceptVerbs("GET", "POST")]
         public IEnumerable<Form> GetAllForms()
         {
-            return TestData.forms;
+            return TestData.getForms();
         }
 
         [AcceptVerbs("GET", "POST")]
         public IHttpActionResult GetForm(int id)
         {
-            var form = TestData.forms.FirstOrDefault((p) => p.Id == id);
+            var form = TestData.getForms().FirstOrDefault((p) => p.Id == id);
             if (form == null)
             {
                 return NotFound();
