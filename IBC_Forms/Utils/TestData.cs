@@ -19,9 +19,11 @@ namespace IBC_Forms.Utils
                     Id = 0,
                     Title = "Erste Form",
                     Fields = new Field[] {
-                        new Field { Id = 0, Title = "Vorname" },
-                        new Field { Id = 1, Title = "Nachname" },
-                        new Field { Id = 2, Title = "PLZ" }
+                        new TextField(0, "Vorname"),
+                        new TextField(1, "Nachname"),
+                        new TextField(2, "PLZ"),
+                        new CheckboxField(3, "Cool", false),
+                        new DropdownField(4, "Position", new string[] { "Bäcker", "Maurer", "Angestellter" })
                     },
                     HTMLTemplate = File.ReadAllText(LocalPath.getTemplatePath() + "formEins.htm"),
                     DocXTemplatePath = "formEins.docx"
@@ -31,9 +33,8 @@ namespace IBC_Forms.Utils
                     Id = 1,
                     Title = "Zweite Form",
                     Fields = new Field[] {
-                        new Field { Id = 0, Title = "Vorname" },
-                        new Field { Id = 1, Title = "Nachname" },
-                        new Field { Id = 2, Title = "PLZ" }
+                        new TextField(0, "Vorname"),
+                        new TextField(1, "Nachname")
                     },
                     HTMLTemplate = File.ReadAllText(LocalPath.getTemplatePath() + "formZwei.htm"),
                     DocXTemplatePath = "formZwei.docx"

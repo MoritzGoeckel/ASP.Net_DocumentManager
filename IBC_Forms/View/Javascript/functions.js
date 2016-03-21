@@ -26,10 +26,10 @@ function renderFormsList()
     }
 
     $("#formLink").html("Formulare");
-    $('#formLink').css("text-decoration", "underline");
 
-    $('#dataLink').css("text-decoration", "none");
-    $('#exportLink').css("text-decoration", "none");
+    $('#formLink').addClass("activeMenuItem");
+    $('#dataLink').removeClass("activeMenuItem");
+    $('#exportLink').removeClass("activeMenuItem");
 
     $("#forms").html(output);
 
@@ -59,9 +59,9 @@ function setNewCurrentForm(id)
 
 function openCurrentForm()
 {
-    $('#formLink').css("text-decoration", "none");
-    $('#dataLink').css("text-decoration", "underline");
-    $('#exportLink').css("text-decoration", "none");
+    $('#formLink').removeClass("activeMenuItem");
+    $('#dataLink').addClass("activeMenuItem");
+    $('#exportLink').removeClass("activeMenuItem");
 
     console.log("openForm");
 
@@ -74,7 +74,37 @@ function openCurrentForm()
     var fields = currentForm.Fields;
     for (f = 0; f < fields.length; f++) {
         var field = fields[f];
-        output += "<tr><td>" + field.Title + ":</td> <td><input class='field_" + field.Id + "' onchange='redrawForm()' value='" + (field.Value != undefined ? field.Value:"" ) + "'></td></tr>";
+
+        if(field.Type == 0) //Text
+            output += "<tr><td>" + field.Title + ":</td> <td><input class='field_" + field.Id + "' onchange='redrawForm()' value='" + (field.Value != undefined ? field.Value : "") + "'></td></tr>";
+
+        if (field.Type == 1) //Checkbox
+        {
+            checked = false;
+            if (field.Value == undefined && field.CheckBox_DefaultChecked)
+                checked = true;
+
+            if (field.Value != undefined && field.Value == "X")
+                checked = true;
+
+            output += "<tr><td>" + field.Title + ":</td> <td><input type='checkbox' class='field_" + field.Id + "' onchange='redrawForm()' " + (checked ? "checked" : "") + "></td></tr>";
+        }
+
+        if (field.Type == 2) //Dropdown
+        {
+            var options = "";
+
+            for (o = 0; o < field.Dropdown_Options.length; o++) {
+                var val = field.Dropdown_Options[o];
+                var selected = "";
+                if (val == field.Value)
+                    selected = "selected";
+
+                options += "<option " + selected + ">" + val + "</option>";
+            }
+
+            output += "<tr><td>" + field.Title + ":</td> <td><select style='width: 100%;' class='field_" + field.Id + "' size='" + field.Dropdown_Options.length + "' onchange='redrawForm()'>" + options + "</select></td></tr>";
+        }
     }
 
     output += "<tr><td></td><td align='right'><a href='#' onclick='renderExport();' style='text-decoration:none;'>Export</a></td></tr>"
@@ -97,7 +127,18 @@ function redrawForm()
     var output = currentForm.HTMLTemplate;
 
     for (i = 0; i < currentForm.Fields.length; i++) {
-        var value = $(".field_" + currentForm.Fields[i].Id).val();
+        var element = $(".field_" + currentForm.Fields[i].Id);
+
+        var value;
+
+        if (currentForm.Fields[i].Type == 0 || currentForm.Fields[i].Type == 2) //Text || Dropdown
+            value = element.val();
+
+        if (currentForm.Fields[i].Type == 1) //Checkbox
+            value = (element.is(":checked") ? "X" : "");
+         
+        if (value == null) 
+            value = "";
 
         output = output.replace("|" + currentForm.Fields[i].Id + "|", value);
         currentForm.Fields[i].Value = value;
@@ -108,9 +149,9 @@ function redrawForm()
 
 function renderExport()
 {
-    $('#formLink').css("text-decoration", "none");
-    $('#dataLink').css("text-decoration", "none");
-    $('#exportLink').css("text-decoration", "underline");
+    $('#formLink').removeClass("activeMenuItem");
+    $('#dataLink').removeClass("activeMenuItem");
+    $('#exportLink').addClass("activeMenuItem");
 
     $("#formLink").html('<a href="#" onclick="renderFormsList();">Formulare</a>');
 

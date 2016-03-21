@@ -96,6 +96,7 @@ namespace IBC_Forms.Controller
                 string html = File.ReadAllText(htmlPath);
 
                 //Send Mail
+                //Send PDF?
 
                 File.Delete(docxPath);
                 File.Delete(htmlPath);
