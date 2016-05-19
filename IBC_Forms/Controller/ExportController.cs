@@ -142,6 +142,14 @@ namespace IBC_Forms.Controller
                 }
             }
 
+            //Lösche ungenutzte Felder
+            int i = 0;
+            while (i < 200)
+            {
+                document.ReplaceText("|" + i + "|", "");
+                i++;
+            }
+
             return document;
         }
     }

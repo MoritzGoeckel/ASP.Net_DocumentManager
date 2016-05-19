@@ -15,8 +15,7 @@ body a:hover{
 }
 
 #all{
-    height: 600px;
-    width: 900px;
+    width: 1200px;
     border: solid 10px #104988;
 
     display: block;
@@ -31,24 +30,31 @@ body a:hover{
 }
 
 #left, #right{
-    height: 550px;
-    width: 380px;
     padding: 25px;
     background-color: white;
 }
 
+#right
+{
+    width: 640px;
+    min-height: 200px;
+    border-left: solid 1px;
+}
+
 #left{
-    float: left;
     padding-right: 20px;
+    width: 380px;
 }
 
 #right{
-    float: right;
     padding-left: 20px;
 }
 
 #leftHeader{
     font-size: 20px;
+
+    display: flex;
+    justify-content: space-between;
 }
 
 #leftHeader a{
@@ -80,4 +86,29 @@ body a:hover{
 .activeMenuItem{
     text-decoration: underline;
     color: #417CAB;
+}
+
+#login{
+    padding-top: 20%;
+    width: 200px;
+    margin: 0 auto; 
+    padding-bottom: 20%;
+}
+
+#login input{
+    width: 100%;
+}
+
+#login h1{
+    line-height: 0em;
+}
+
+.errortext{
+    color: red;
+    font-size: 0.9em;
+}
+
+.greentext{
+    color: green;
+    font-size: 0.9em;
 }

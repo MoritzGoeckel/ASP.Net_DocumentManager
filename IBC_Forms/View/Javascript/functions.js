@@ -160,9 +160,10 @@ function renderExport()
     $("#dataLink").html("<a href='#' onclick='openCurrentForm()'>Daten</a>");
 
     //Set PDF-Export-link
-    var fieldsParam = "";
+    var fieldsParam = "download=true;";
     for (i = 0; i < currentForm.Fields.length; i++) {
-        fieldsParam += currentForm.Fields[i].Id + "=" + currentForm.Fields[i].Value + ";"
+        if (currentForm.Fields[i].Value != "" && currentForm.Fields[i].Value != null && currentForm.Fields[i].Value != " ")
+            fieldsParam += currentForm.Fields[i].Id + "=" + currentForm.Fields[i].Value + ";"
     }
     var params = currentForm.Id + "/" + fieldsParam;
     var url = "/api/export/" + params;

@@ -142,7 +142,8 @@
     <Content Include="View\Converters\html_to_pdf\MIT-LICENSE.txt" />
     <Content Include="View\Javascript\functions.js" />
     <Content Include="View\Libraries\jquery-1.11.3.min.js" />
-    <Content Include="View\Sites\index.html" />
+    <Content Include="View\Sites\index.aspx" />
+    <Content Include="View\Sites\login.aspx" />
     <Content Include="View\style.css" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -161,6 +162,20 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\LocalPath.cs" />
     <Compile Include="Utils\TestData.cs" />
+    <Compile Include="View\Sites\index.aspx.cs">
+      <DependentUpon>index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="View\Sites\index.aspx.designer.cs">
+      <DependentUpon>index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="View\Sites\login.aspx.cs">
+      <DependentUpon>login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="View\Sites\login.aspx.designer.cs">
+      <DependentUpon>login.aspx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
