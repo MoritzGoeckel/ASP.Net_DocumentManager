@@ -113,6 +113,8 @@
     <Content Include="View\Converters\html_to_docx\gulpfile.coffee" />
     <Content Include="View\Converters\html_to_docx\LICENSE" />
     <Content Include="View\Converters\html_to_docx\README.md" />
+    <Content Include="View\Images\getriebe.png" />
+    <Content Include="View\Images\logo_schlote_gruppe_negativ.eps" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -140,6 +142,12 @@
     <Content Include="View\Converters\html_to_pdf\jspdf.plugin.standard_fonts_metrics.js" />
     <Content Include="View\Converters\html_to_pdf\jspdf.PLUGINTEMPLATE.js" />
     <Content Include="View\Converters\html_to_pdf\MIT-LICENSE.txt" />
+    <Content Include="View\Images\china.png" />
+    <Content Include="View\Images\czech.png" />
+    <Content Include="View\Images\germany.png" />
+    <Content Include="View\Images\logo_blue.jpg" />
+    <Content Include="View\Images\logo_white.jpg" />
+    <Content Include="View\Images\uk.png" />
     <Content Include="View\Javascript\functions.js" />
     <Content Include="View\Libraries\jquery-1.11.3.min.js" />
     <Content Include="View\Sites\index.aspx" />
