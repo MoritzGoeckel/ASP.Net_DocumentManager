@@ -128,7 +128,7 @@ namespace IBC_Forms.Controller
 
         private Form getForm(int id)
         {
-            return TestData.getForms().FirstOrDefault((p) => p.Id == id);
+            return Database.getInstance().getForms().FirstOrDefault((p) => p.Id == id);
         }
 
         private DocX replaceFieldsInDocument(string fields, DocX document)
