@@ -14,7 +14,6 @@ namespace IBC_Forms.Utils
         {
             Form[] f = new Form[]
             {
-                //Load Data From Database ???
                 new Form {
                     Id = 0,
                     Title = "Erste Form",
@@ -25,8 +24,8 @@ namespace IBC_Forms.Utils
                         new CheckboxField(3, "Cool", false),
                         new DropdownField(4, "Position", new string[] { "Bäcker", "Maurer", "Angestellter" })
                     },
-                    HTMLTemplate = File.ReadAllText(LocalPath.getTemplatePath() + "formEins.htm"),
-                    DocXTemplatePath = "formEins.docx"
+                    Template_html = "formEins.htm",
+                    Template_docx = "formEins.docx"
                 },
 
                 new Form {
@@ -36,8 +35,8 @@ namespace IBC_Forms.Utils
                         new TextField(0, "Vorname"),
                         new TextField(1, "Nachname")
                     },
-                    HTMLTemplate = File.ReadAllText(LocalPath.getTemplatePath() + "formZwei.htm"),
-                    DocXTemplatePath = "formZwei.docx"
+                    Template_html = "formZwei.htm",
+                    Template_docx = "formZwei.docx"
                 },
 
                 new Form {
@@ -134,8 +133,8 @@ namespace IBC_Forms.Utils
                         new TextField(67, "Name"),
                         new TextField(68, "Name 2")
                     },
-                    HTMLTemplate = File.ReadAllText(LocalPath.getTemplatePath() + "EDV-Zugangsdaten.htm"),
-                    DocXTemplatePath = "EDV-Zugangsdaten.docx"
+                    Template_html = "EDV-Zugangsdaten.htm",
+                    Template_docx = "EDV-Zugangsdaten.docx"
                 }
             };
 

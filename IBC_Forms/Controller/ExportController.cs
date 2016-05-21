@@ -26,7 +26,7 @@ namespace IBC_Forms.Controller
             string tmpPath = LocalPath.getTmpPath() + rand.Next(100000);
             string docxPath = tmpPath + ".docx";
 
-            File.Copy(LocalPath.getTemplatePath() + form.DocXTemplatePath, docxPath);
+            File.Copy(LocalPath.getTemplatePath() + form.Template_docx, docxPath);
             DocX document = DocX.Load(docxPath);
             document = replaceFieldsInDocument(fields, document);
 
@@ -128,7 +128,7 @@ namespace IBC_Forms.Controller
 
         private Form getForm(int id)
         {
-            return Database.getInstance().getForms().FirstOrDefault((p) => p.Id == id);
+            return Database.getInstance().getVisibleForms().FirstOrDefault((p) => p.Id == id);
         }
 
         private DocX replaceFieldsInDocument(string fields, DocX document)

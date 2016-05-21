@@ -5,7 +5,7 @@ using System.Web;
 
 namespace IBC_Forms.Model
 {
-    public abstract class Field
+    public class Field
     {
         public enum FieldType
         {

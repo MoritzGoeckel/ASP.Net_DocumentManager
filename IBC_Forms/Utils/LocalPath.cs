@@ -16,5 +16,10 @@ namespace IBC_Forms.Utils
         {
             return System.Web.Hosting.HostingEnvironment.MapPath("~/templates/");
         }
+
+        public static string getDatabasePath()
+        {
+            return System.Web.Hosting.HostingEnvironment.MapPath("~/Database/");
+        }
     }
 }

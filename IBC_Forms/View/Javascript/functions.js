@@ -124,7 +124,7 @@ function openCurrentForm()
 
 function redrawForm()
 {  
-    var output = currentForm.HTMLTemplate;
+    var output = currentForm.Template_html;
 
     for (i = 0; i < currentForm.Fields.length; i++) {
         var element = $(".field_" + currentForm.Fields[i].Id);
