@@ -12,5 +12,6 @@ namespace IBC_Forms.Model
         public Field[] Fields { get; set; }
         public string Template_html { get; set; }
         public string Template_docx { get; set; }
+        public bool Active { get; set; }
     }
 }

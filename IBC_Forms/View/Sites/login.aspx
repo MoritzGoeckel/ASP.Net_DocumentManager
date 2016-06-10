@@ -22,9 +22,14 @@
         string name = nvc["name"];
         string pw = nvc["pw"];
 
-        if (name == "m" && pw == "0") //Todo: Real auth
+        if ((name == "m" || name == "a") && pw == "0") //Todo: Real auth
         {
-            Session["user"] = name;
+            bool isAdmin = false;
+            if (name == "a") //Todo: is admin real
+                isAdmin = true;
+
+            IBC_Forms.Model.User user = new IBC_Forms.Model.User(name, isAdmin);
+            Session["user"] = user;
 
             Response.Redirect("index.aspx", false);
             Context.ApplicationInstance.CompleteRequest();

@@ -25,20 +25,18 @@ namespace IBC_Forms.Utils
             connection = new SQLiteConnection("Data Source="+LocalPath.getDatabasePath() + "formsDB"+ ".s3db;Version=3;");
             connection.Open();
 
-            if (getVisibleForms().Length == 0)
+            if (getForms().Length == 0)
             {
                 foreach (Form f in TestData.getForms())
                     insertForm(f);
             }
         }
 
-        public Form[] getVisibleForms()
+        public Form[] getForms()
         {
-            //return TestData.getForms();
-
             List<Form> forms = new List<Form>();
 
-            string sql = "SELECT * FROM forms WHERE visible = 1 ORDER BY title";
+            string sql = "SELECT * FROM forms ORDER BY title";
             SQLiteCommand command = new SQLiteCommand(sql, connection);
             SQLiteDataReader reader = command.ExecuteReader();
 
@@ -52,11 +50,19 @@ namespace IBC_Forms.Utils
                     Title = reader["title"].ToString(),
                     Template_html = File.ReadAllText(LocalPath.getTemplatePath() + reader["template_html"].ToString()),
                     Template_docx = reader["template_docx"].ToString(),
-                    Fields = JsonConvert.DeserializeObject<Field[]>(reader["fields"].ToString())
+                    Fields = JsonConvert.DeserializeObject<Field[]>(reader["fields"].ToString()),
+                    Active = reader["visible"].ToString() == "1"
                 });
             }
 
             return forms.ToArray();
+        }
+
+        public void setFormVisible(int id, bool visible)
+        {
+            string sql = "UPDATE forms SET visible = " + (visible ? "1" : "0") + " WHERE id = " + id;
+            SQLiteCommand command = new SQLiteCommand(sql, connection);
+            command.ExecuteNonQuery();
         }
 
         public void insertForm(Form f)

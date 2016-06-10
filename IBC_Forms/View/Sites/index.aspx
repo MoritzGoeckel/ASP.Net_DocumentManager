@@ -41,6 +41,10 @@
 
                     <span id="exportLink">Export</span>
 
+                    <%=
+                        (Session["user"] != null && ((IBC_Forms.Model.User)Session["user"]).isAdmin() ? "<span id=\"adminLink\"><a href=\"#\" onclick=\"openAdminForm()\">Admin</a></span>" : "")
+                    %>
+
                     <span><a href="login.aspx?logout=true">Logout</a></span>
                 </div>
 

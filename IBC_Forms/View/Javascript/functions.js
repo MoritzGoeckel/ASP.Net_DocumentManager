@@ -22,7 +22,9 @@ function renderFormsList()
 
     for (i = 0; i < forms.length; i++) {
         var form = forms[i];
-        output += "<a href='#' onclick='setNewCurrentForm(" + form.Id + ")'>" + form.Title + "</a><br />";
+
+        if (form.Active)
+            output += "<a href='#' onclick='setNewCurrentForm(" + form.Id + ")'>" + form.Title + "</a><br />";
     }
 
     $("#formLink").html("Formulare");
@@ -30,6 +32,7 @@ function renderFormsList()
     $('#formLink').addClass("activeMenuItem");
     $('#dataLink').removeClass("activeMenuItem");
     $('#exportLink').removeClass("activeMenuItem");
+    $('#adminLink').removeClass("activeMenuItem");
 
     $("#forms").html(output);
 
@@ -182,4 +185,47 @@ function renderExport()
     $("#forms").hide();
     $("#export").show();
     $("#data").hide();
+}
+
+function openAdminForm()
+{
+    var output = "";
+
+    output += "Bearbeiten Sie hier welche Formulare aktiv geschaltet sein sollen<p />";
+
+    for (i = 0; i < forms.length; i++) {
+        var form = forms[i];
+        output += "<a href='#' style='color: " + (form.Active ? "green" : "red") + "' onclick='toggleFormActive(" + i + ")'>" + (form.Active ? "Aktiviert" : "Deaktiviert") + "</a> " + form.Title + "<br />";
+    }
+
+    $('#formLink').removeClass("activeMenuItem");
+    $('#dataLink').removeClass("activeMenuItem");
+    $('#exportLink').removeClass("activeMenuItem");
+
+    $('#adminLink').addClass("activeMenuItem");
+
+    $("#formLink").html('<a href="#" onclick="renderFormsList();">Formulare</a>');
+
+    $("#forms").html(output);
+
+    $("#forms").show();
+    $("#export").hide();
+    $("#data").hide();
+
+    $("#exportLink").html("Export");
+    $("#dataLink").html("Daten");
+
+    $("#right").html("");
+}
+
+function toggleFormActive(index)
+{
+    var form = forms[index];
+    console.log(form);
+
+    $.get("/api/forms/setFormActive/" + form.Id + "/" + (form.Active ? "0" : "1"), function (data) {
+        console.log(data);
+        forms[index].Active = data.Active;
+        openAdminForm();
+    });
 }
