@@ -32,6 +32,12 @@ namespace IBC_Forms.Utils
             }
         }
 
+        internal void DeleteData()
+        {
+            SQLiteCommand command = new SQLiteCommand("DELETE FROM forms", connection);
+            command.ExecuteNonQuery();
+        }
+
         public Form[] getForms()
         {
             List<Form> forms = new List<Form>();
@@ -49,9 +55,10 @@ namespace IBC_Forms.Utils
                     Id = Convert.ToInt32(reader["id"]),
                     Title = reader["title"].ToString(),
                     Template_html = File.ReadAllText(LocalPath.getTemplatePath() + reader["template_html"].ToString()),
-                    Template_docx = reader["template_docx"].ToString(),
+                    Template = reader["template"].ToString(),
                     Fields = JsonConvert.DeserializeObject<Field[]>(reader["fields"].ToString()),
-                    Active = reader["visible"].ToString() == "1"
+                    Active = reader["visible"].ToString() == "1",
+                    Type = Convert.ToInt32(reader["type"])
                 });
             }
 
@@ -67,7 +74,7 @@ namespace IBC_Forms.Utils
 
         public void insertForm(Form f)
         {
-            string sql = "INSERT INTO forms (title, template_docx, template_html, fields) VALUES ('" + f.Title + "', '"+ f.Template_docx +"', '" + f.Template_html + "', @fields)";
+            string sql = "INSERT INTO forms (title, template, template_html, fields, type, visible) VALUES ('" + f.Title + "', '"+ f.Template +"', '" + f.Template_html + "', @fields, "+ f.Type +", 1)";
             SQLiteCommand command = new SQLiteCommand(sql, connection);
             command.Parameters.Add(new SQLiteParameter("@fields", JsonConvert.SerializeObject(f.Fields)));
 

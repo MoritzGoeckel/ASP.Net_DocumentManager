@@ -1,4 +1,6 @@
-﻿using System;
+﻿using IBC_Forms.Model;
+using IBC_Forms.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
@@ -21,6 +23,11 @@ namespace IBC_Forms
                 name: "Export",
                 routeTemplate: "api/{controller}/{id}/{fields}/{type}"
             );
+
+            //Startup daten neue einpfelgen ???
+            Database.getInstance().DeleteData();
+            foreach (Form f in TestData.getForms())
+                Database.getInstance().insertForm(f);
         }
     }
 }

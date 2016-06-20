@@ -3,6 +3,7 @@ using IBC_Forms.Utils;
 using iTextSharp.text;
 using iTextSharp.text.html.simpleparser;
 using iTextSharp.text.pdf;
+using Microsoft.Office.Interop.Excel;
 using Microsoft.Office.Interop.Word;
 using Novacode;
 using System;
@@ -24,84 +25,169 @@ namespace IBC_Forms.Controller
         {
             var form = getForm(id);
             string tmpPath = LocalPath.getTmpPath() + rand.Next(100000);
-            string docxPath = tmpPath + ".docx";
+            string tmpTemplatePath = tmpPath + (form.Type == 0 ? ".docx" : ".xls");
 
-            File.Copy(LocalPath.getTemplatePath() + form.Template_docx, docxPath);
-            DocX document = DocX.Load(docxPath);
-            document = replaceFieldsInDocument(fields, document);
+            File.Copy(LocalPath.getTemplatePath() + form.Template, tmpTemplatePath);
 
-            document.Save();
-
-            if (type == "pdf")
+            // =============================== DOCX
+            if (form.Type == Utils.DocumentTypes.DOCX)
             {
-                string pdfPath = tmpPath + ".pdf";
+                DocX document = DocX.Load(tmpTemplatePath);
+                document = replaceFieldsInDocumentDocX(fields, document);
 
-                var word = new Microsoft.Office.Interop.Word.Application();
-                word.Visible = false;
+                document.Save();
 
-                var wordDoc = word.Documents.Open(FileName: docxPath, ReadOnly: false);
-                wordDoc.SaveAs2(FileName: pdfPath, FileFormat: WdSaveFormat.wdFormatPDF);
-                wordDoc.Close();
+                if (type == "pdf")
+                {
+                    string pdfPath = tmpPath + ".pdf";
 
-                word.Quit();
+                    var word = new Microsoft.Office.Interop.Word.Application();
+                    word.Visible = false;
 
-                HttpResponseMessage response = getFileResponse(pdfPath, "form.pdf");
+                    var wordDoc = word.Documents.Open(FileName: tmpTemplatePath, ReadOnly: false);
+                    wordDoc.SaveAs2(FileName: pdfPath, FileFormat: WdSaveFormat.wdFormatPDF);
+                    wordDoc.Close();
 
-                File.Delete(docxPath);
-                File.Delete(pdfPath);
+                    word.Quit();
 
-                return response;
+                    HttpResponseMessage response = getFileResponse(pdfPath, "form.pdf");
+
+                    File.Delete(tmpTemplatePath);
+                    File.Delete(pdfPath);
+
+                    return response;
+                }
+                else if (type == "docx")
+                {
+                    HttpResponseMessage response = getFileResponse(tmpTemplatePath, "form.docx");
+
+                    File.Delete(tmpTemplatePath);
+
+                    return response;
+                }
+                else if (type == "html")
+                {
+                    string htmlPath = tmpPath + ".html";
+
+                    var word = new Microsoft.Office.Interop.Word.Application();
+                    word.Visible = false;
+
+                    var wordDoc = word.Documents.Open(FileName: tmpTemplatePath, ReadOnly: false);
+                    wordDoc.SaveAs2(FileName: htmlPath, FileFormat: WdSaveFormat.wdFormatFilteredHTML);
+                    wordDoc.Close();
+
+                    word.Quit();
+
+                    HttpResponseMessage response = getFileResponse(htmlPath, "form.html");
+
+                    File.Delete(tmpTemplatePath);
+                    File.Delete(htmlPath);
+
+                    return response;
+                }
+                else if (type == "mail")
+                {
+                    string htmlPath = tmpPath + ".html";
+
+                    var word = new Microsoft.Office.Interop.Word.Application();
+                    word.Visible = false;
+
+                    var wordDoc = word.Documents.Open(FileName: tmpTemplatePath, ReadOnly: false);
+                    wordDoc.SaveAs2(FileName: htmlPath, FileFormat: WdSaveFormat.wdFormatHTML);
+                    wordDoc.Close();
+
+                    word.Quit();
+
+                    string html = File.ReadAllText(htmlPath);
+
+                    //Send Mail
+                    //Send PDF?
+
+                    File.Delete(tmpTemplatePath);
+                    File.Delete(htmlPath);
+
+                    return new HttpResponseMessage();
+                }
+                else
+                    return null;
             }
-            else if (type == "docx")
+
+            // =============================== XLS
+            else if (form.Type == Utils.DocumentTypes.XLS)
             {
-                HttpResponseMessage response = getFileResponse(docxPath, "form.docx");
+                object m = Type.Missing;
+                Microsoft.Office.Interop.Excel.Application app = new Microsoft.Office.Interop.Excel.Application();
+                app.Visible = false;
 
-                File.Delete(docxPath);
+                Workbook wb = app.Workbooks.Open(
+                tmpTemplatePath,
+                m, false, m, m, m, m, m, m, m, m, m, m, m, m);
 
-                return response;
-            }
-            else if (type == "html")
-            {
-                string htmlPath = tmpPath + ".html";
+                wb = ReplaceTextInExcelFile(fields, wb);
 
-                var word = new Microsoft.Office.Interop.Word.Application();
-                word.Visible = false;
+                wb.Save();
 
-                var wordDoc = word.Documents.Open(FileName: docxPath, ReadOnly: false);
-                wordDoc.SaveAs2(FileName: htmlPath, FileFormat: WdSaveFormat.wdFormatFilteredHTML);
-                wordDoc.Close();
+                if (type == "pdf")
+                {
+                    string pdfPath = tmpPath + ".pdf";
 
-                word.Quit();
+                    wb.SaveAs(pdfPath, FileFormat: WdSaveFormat.wdFormatPDF);
+                    wb.Close();
 
-                HttpResponseMessage response = getFileResponse(htmlPath, "form.html");
+                    app.Quit();
 
-                File.Delete(docxPath);
-                File.Delete(htmlPath);
+                    HttpResponseMessage response = getFileResponse(pdfPath, "form.pdf");
 
-                return response;
-            }
-            else if (type == "mail")
-            {
-                string htmlPath = tmpPath + ".html";
+                    File.Delete(tmpTemplatePath);
+                    File.Delete(pdfPath);
 
-                var word = new Microsoft.Office.Interop.Word.Application();
-                word.Visible = false;
+                    return response;
+                }
+                else if (type == "docx")
+                {
+                    HttpResponseMessage response = getFileResponse(tmpTemplatePath, "form.xls");
 
-                var wordDoc = word.Documents.Open(FileName: docxPath, ReadOnly: false);
-                wordDoc.SaveAs2(FileName: htmlPath, FileFormat: WdSaveFormat.wdFormatHTML);
-                wordDoc.Close();
+                    File.Delete(tmpTemplatePath);
 
-                word.Quit();
+                    return response;
+                }
+                else if (type == "html")
+                {
+                    string htmlPath = tmpPath + ".html";
 
-                string html = File.ReadAllText(htmlPath);
+                    wb.SaveAs(htmlPath, FileFormat: WdSaveFormat.wdFormatFilteredHTML);
+                    wb.Close();
 
-                //Send Mail
-                //Send PDF?
+                    app.Quit();
 
-                File.Delete(docxPath);
-                File.Delete(htmlPath);
+                    HttpResponseMessage response = getFileResponse(htmlPath, "form.html");
 
-                return new HttpResponseMessage();
+                    File.Delete(tmpTemplatePath);
+                    File.Delete(htmlPath);
+
+                    return response;
+                }
+                else if (type == "mail")
+                {
+                    string htmlPath = tmpPath + ".html";
+
+                    wb.SaveAs(htmlPath, FileFormat: WdSaveFormat.wdFormatFilteredHTML);
+                    wb.Close();
+
+                    app.Quit();
+
+                    string html = File.ReadAllText(htmlPath);
+
+                    //Send Mail ???
+                    //Send PDF? ???
+
+                    File.Delete(tmpTemplatePath);
+                    File.Delete(htmlPath);
+
+                    return new HttpResponseMessage();
+                }
+                else
+                    return null;
             }
             else
                 return null;
@@ -131,7 +217,7 @@ namespace IBC_Forms.Controller
             return Database.getInstance().getForms().FirstOrDefault((p) => p.Id == id);
         }
 
-        private DocX replaceFieldsInDocument(string fields, DocX document)
+        private DocX replaceFieldsInDocumentDocX(string fields, DocX document)
         {
             foreach (string field in fields.Split(';'))
             {
@@ -151,6 +237,44 @@ namespace IBC_Forms.Controller
             }
 
             return document;
+        }
+
+        static Workbook ReplaceTextInExcelFile(string fields, Workbook wb)
+        {
+            foreach (Worksheet ws in wb.Worksheets)
+            {
+                object m = Type.Missing;
+
+                Microsoft.Office.Interop.Excel.Range r = (Microsoft.Office.Interop.Excel.Range)ws.UsedRange;
+
+                foreach (string field in fields.Split(';'))
+                {
+                    if (field != null && field != "" && field != " ")
+                    {
+                        string[] keyValue = field.Split('=');
+                        bool success = r.Replace(
+                            "|" + keyValue[0] + "|",
+                            keyValue[1],
+                            XlLookAt.xlWhole,
+                            XlSearchOrder.xlByRows,
+                            false, m, m, m);
+                    }
+                }
+
+                //Lösche ungenutzte Felder
+                int i = 0;
+                while (i < 200)
+                {
+                    r.Replace(
+                           "|" + i + "|",
+                            "",
+                            XlLookAt.xlWhole,
+                            XlSearchOrder.xlByRows,
+                            true, m, m, m);
+                    i++;
+                }
+            }
+            return wb;
         }
     }
 }

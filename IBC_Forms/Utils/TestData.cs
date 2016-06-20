@@ -25,7 +25,9 @@ namespace IBC_Forms.Utils
                         new DropdownField(4, "Position", new string[] { "Bäcker", "Maurer", "Angestellter" })
                     },
                     Template_html = "formEins.htm",
-                    Template_docx = "formEins.docx"
+                    Template = "formEins.docx",
+                    Type = DocumentTypes.DOCX,
+                    Active = true
                 },
 
                 new Form {
@@ -36,7 +38,9 @@ namespace IBC_Forms.Utils
                         new TextField(1, "Nachname")
                     },
                     Template_html = "formZwei.htm",
-                    Template_docx = "formZwei.docx"
+                    Template = "formZwei.docx",
+                    Type = DocumentTypes.DOCX,
+                    Active = true
                 },
 
                 new Form {
@@ -134,8 +138,28 @@ namespace IBC_Forms.Utils
                         new TextField(68, "Name 2")
                     },
                     Template_html = "EDV-Zugangsdaten.htm",
-                    Template_docx = "EDV-Zugangsdaten.docx"
-                }
+                    Template = "EDV-Zugangsdaten.docx",
+                    Type = DocumentTypes.DOCX,
+                    Active = true
+                },
+
+                new Form {
+                    Id = 3,
+                    Title = "KM021-DE Kapazitätsabfrage",
+                    Fields = new Field[] {
+                        new TextField(0, "DUNS-NR"),
+                        new TextField(1, "Lieferantenname"),
+                        new TextField(2, "Zeichnungsnummer"),
+                        new TextField(3, "Index"),
+                        new TextField(4, "Zeichnungsdatum"),
+                        new TextField(5, "RFQ NR Schlote"),
+                        new TextField(6, "Projekt")
+                    },
+                    Template_html = "KM021-DE-Kapazitätsabfrage.htm",
+                    Template = "KM021-DE-Kapazitätsabfrage.xls",
+                    Type = DocumentTypes.XLS,
+                    Active = true
+                },
             };
 
             return f;

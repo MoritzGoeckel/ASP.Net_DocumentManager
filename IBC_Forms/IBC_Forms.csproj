@@ -73,6 +73,9 @@
       <HintPath>..\packages\Microsoft.Data.ConnectionUI.14.2.25123\lib\net45\Microsoft.Data.ConnectionUI.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.Office.Interop.Word, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -200,6 +203,7 @@
     <Compile Include="Model\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Database\Database.cs" />
+    <Compile Include="Utils\DocumentTypes.cs" />
     <Compile Include="Utils\LocalPath.cs" />
     <Compile Include="Utils\TestData.cs" />
     <Compile Include="View\Sites\index.aspx.cs">
@@ -230,6 +234,9 @@
     <Folder Include="View\Converters\html_to_pdf\test\" />
     <Folder Include="View\Converters\html_to_pdf\tools\" />
     <Folder Include="View\Converters\html_to_print\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
