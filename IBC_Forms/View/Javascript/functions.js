@@ -148,6 +148,7 @@ function redrawForm()
     }
 
     $("#right").html(output);
+    console.log(output);
 }
 
 function renderExport()

@@ -156,7 +156,7 @@ namespace IBC_Forms.Utils
                         new TextField(6, "Projekt")
                     },
                     Template_html = "KM021-DE-Kapazitätsabfrage.htm",
-                    Template = "KM021-DE-Kapazitätsabfrage.xls",
+                    Template = "KM021-DE-Kapazitätsabfrage.xlsx",
                     Type = DocumentTypes.XLS,
                     Active = true
                 },

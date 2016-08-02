@@ -25,9 +25,12 @@ namespace IBC_Forms.Controller
         {
             var form = getForm(id);
             string tmpPath = LocalPath.getTmpPath() + rand.Next(100000);
-            string tmpTemplatePath = tmpPath + (form.Type == 0 ? ".docx" : ".xls");
+            string tmpTemplatePath = tmpPath + (form.Type == 0 ? ".docx" : ".xlsx");
 
             File.Copy(LocalPath.getTemplatePath() + form.Template, tmpTemplatePath);
+
+            fields = fields.Replace("download=true", "");
+            fields = fields.Replace("download=false", "");
 
             // =============================== DOCX
             if (form.Type == Utils.DocumentTypes.DOCX)
@@ -118,6 +121,7 @@ namespace IBC_Forms.Controller
                 object m = Type.Missing;
                 Microsoft.Office.Interop.Excel.Application app = new Microsoft.Office.Interop.Excel.Application();
                 app.Visible = false;
+                app.DisplayAlerts = false;
 
                 Workbook wb = app.Workbooks.Open(
                 tmpTemplatePath,
@@ -131,9 +135,9 @@ namespace IBC_Forms.Controller
                 {
                     string pdfPath = tmpPath + ".pdf";
 
-                    wb.SaveAs(pdfPath, FileFormat: WdSaveFormat.wdFormatPDF);
+                    //(wb.Sheets[1] as Worksheet).SaveAs(pdfPath, FileFormat: WdSaveFormat.wdFormatPDF);
+                    wb.ExportAsFixedFormat(XlFixedFormatType.xlTypePDF, pdfPath);
                     wb.Close();
-
                     app.Quit();
 
                     HttpResponseMessage response = getFileResponse(pdfPath, "form.pdf");
@@ -145,7 +149,10 @@ namespace IBC_Forms.Controller
                 }
                 else if (type == "docx")
                 {
-                    HttpResponseMessage response = getFileResponse(tmpTemplatePath, "form.xls");
+                    wb.Close();
+                    app.Quit();
+
+                    HttpResponseMessage response = getFileResponse(tmpTemplatePath, "form.xlsx");
 
                     File.Delete(tmpTemplatePath);
 
@@ -153,14 +160,14 @@ namespace IBC_Forms.Controller
                 }
                 else if (type == "html")
                 {
-                    string htmlPath = tmpPath + ".html";
+                    string htmlPath = tmpPath + ".htm";
 
-                    wb.SaveAs(htmlPath, FileFormat: WdSaveFormat.wdFormatFilteredHTML);
+                    wb.SaveAs(htmlPath, FileFormat: XlFileFormat.xlHtml); // Geht noch nicht
+
                     wb.Close();
-
                     app.Quit();
 
-                    HttpResponseMessage response = getFileResponse(htmlPath, "form.html");
+                    HttpResponseMessage response = getFileResponse(htmlPath, "form.htm");
 
                     File.Delete(tmpTemplatePath);
                     File.Delete(htmlPath);
@@ -241,38 +248,37 @@ namespace IBC_Forms.Controller
 
         static Workbook ReplaceTextInExcelFile(string fields, Workbook wb)
         {
-            foreach (Worksheet ws in wb.Worksheets)
+            Worksheet ws = wb.Worksheets[1] as Worksheet;
+            object m = Type.Missing;
+
+            Microsoft.Office.Interop.Excel.Range r = (Microsoft.Office.Interop.Excel.Range)ws.UsedRange;
+            Protection p = ws.Protection;
+
+            foreach (string field in fields.Split(';')) 
             {
-                object m = Type.Missing;
-
-                Microsoft.Office.Interop.Excel.Range r = (Microsoft.Office.Interop.Excel.Range)ws.UsedRange;
-
-                foreach (string field in fields.Split(';'))
+                if (field != null && field != "" && field != " ")
                 {
-                    if (field != null && field != "" && field != " ")
-                    {
-                        string[] keyValue = field.Split('=');
-                        bool success = r.Replace(
-                            "|" + keyValue[0] + "|",
-                            keyValue[1],
-                            XlLookAt.xlWhole,
-                            XlSearchOrder.xlByRows,
-                            false, m, m, m);
-                    }
+                    string[] keyValue = field.Split('=');
+                    bool success = r.Replace(
+                        "|" + keyValue[0] + "|",
+                        keyValue[1],
+                        XlLookAt.xlPart,
+                        XlSearchOrder.xlByRows,
+                        false, m, m, m);
                 }
+            }
 
-                //Lösche ungenutzte Felder
-                int i = 0;
-                while (i < 200)
-                {
-                    r.Replace(
-                           "|" + i + "|",
-                            "",
-                            XlLookAt.xlWhole,
-                            XlSearchOrder.xlByRows,
-                            true, m, m, m);
-                    i++;
-                }
+            //Lösche ungenutzte Felder
+            int i = 0;
+            while (i < 200)
+            {
+                r.Replace(
+                        "|" + i + "|",
+                        "",
+                        XlLookAt.xlWhole,
+                        XlSearchOrder.xlByRows,
+                        true, m, m, m);
+                i++;
             }
             return wb;
         }

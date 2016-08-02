@@ -36,9 +36,10 @@ body a:hover{
 
 #right
 {
-    width: 640px;
+    width: 730px;
     min-height: 200px;
     border-left: solid 1px;
+    overflow-x: auto;
 }
 
 #left{

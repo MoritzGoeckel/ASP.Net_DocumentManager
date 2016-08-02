@@ -3,6 +3,7 @@ using IBC_Forms.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web.Http;
 
 namespace IBC_Forms
@@ -24,10 +25,14 @@ namespace IBC_Forms
                 routeTemplate: "api/{controller}/{id}/{fields}/{type}"
             );
 
+            /*Encoding latinEncoding = Encoding.GetEncoding("UTF-16");
+            GlobalConfiguration.Configuration.Formatters.JsonFormatter.SupportedEncodings.Add(latinEncoding);
+            GlobalConfiguration.Configuration.Formatters.JsonFormatter.SupportedEncodings.RemoveAt(0);*/
+
             //Startup daten neue einpfelgen ???
-            Database.getInstance().DeleteData();
+            /*Database.getInstance().DeleteData();
             foreach (Form f in TestData.getForms())
-                Database.getInstance().insertForm(f);
+                Database.getInstance().insertForm(f);*/
         }
     }
 }
