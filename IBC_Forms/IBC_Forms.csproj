@@ -146,7 +146,6 @@
     <Content Include="View\Converters\html_to_docx\LICENSE" />
     <Content Include="View\Converters\html_to_docx\README.md" />
     <Content Include="View\Images\getriebe.png" />
-    <Content Include="View\Images\logo_schlote_gruppe_negativ.eps" />
     <Content Include="Database\formsDB.s3db" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

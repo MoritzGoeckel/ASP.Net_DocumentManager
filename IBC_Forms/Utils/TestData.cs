@@ -152,7 +152,7 @@ namespace IBC_Forms.Utils
                         new TextField(2, "Zeichnungsnummer"),
                         new TextField(3, "Index"),
                         new TextField(4, "Zeichnungsdatum"),
-                        new TextField(5, "RFQ NR Schlote"),
+                        new TextField(5, "RFQ NR"),
                         new TextField(6, "Projekt")
                     },
                     Template_html = "KM021-DE-Kapazitätsabfrage.htm",
